@@ -4,6 +4,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import Response
 import subprocess
 import uuid
+import json
 import os
 
 app = FastAPI()
@@ -36,6 +37,31 @@ async def process_image(file: UploadFile = File(...)):
 async def process_image(file: UploadFile = File(...)):
     return await upscale(file, 8)
 
+def load_process_mode():
+    default = "gpu"
+
+    if not os.path.exists("config.json"):
+        return default
+
+    try:
+        with open("config.json", "r") as f:
+            cfg = json.load(f)
+        mode = cfg.get("process_mode", default).lower()
+    except Exception:
+        return default
+
+    if mode not in ["gpu", "cpu"]:
+        return default
+
+    return mode
+def get_execution_provider():
+    mode = load_process_mode()
+
+    if mode == "gpu":
+        return "CUDAExecutionProvider"
+    else:
+        return "CPUExecutionProvider"
+
 async def upscale(file: UploadFile, multiplier = 2):
     image_id = uuid.uuid4()
     input_filename = f"img_cache/{image_id}.png"
@@ -52,7 +78,7 @@ async def upscale(file: UploadFile, multiplier = 2):
                 "python",
                 "./upscaler/upscale.py",
                 "--model", "./upscaler/model/2xLiveActionV1_SPAN.onnx",
-                "--provider", "CPUExecutionProvider",
+                "--provider", get_execution_provider(),
                 "--image", input_filename,
                 "--scale", str(multiplier)
             ],

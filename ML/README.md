@@ -1,8 +1,13 @@
 # umkm-photo-enhancer-ai
 
-Usage:
+### Config:
+- **process_mode**<br>
+    Set process_mode in `config.json`<br>
+    Use `"gpu"` for CUDA or `"cpu"` for CPU
+
+### Usage:
 ```
 uvicorn api:app --reload
 ```
-Path: http://127.0.0.1:8000/
-Docs: http://127.0.0.1:8000/docs
+**Path**: http://127.0.0.1:8000/<br>
+**Docs:** http://127.0.0.1:8000/docs
