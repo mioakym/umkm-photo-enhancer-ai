@@ -1,6 +1,6 @@
 # umkm-photo-enhancer-ai
 
-Running:
+Usage:
 ```
 uvicorn api:app --reload
 ```

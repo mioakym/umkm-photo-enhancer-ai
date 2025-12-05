@@ -10,31 +10,42 @@ app = FastAPI()
 
 @app.get("/")
 def home():
-    return {"message": "Hello from FastAPI!"}
+    return {"message": "hi kak! >-<"}
 
-@app.get("/hello/{name}")
-def hello(name: str):
-    return {"message": f"Hello, {name}!"}
+# @app.get("/hello/{name}")
+# def hello(name: str):
+#     return {"message": f"Hello, {name}!"}
+#
+# @app.post("/add")
+# def add_numbers(data: dict):
+#     return {"result": data["a"] + data["b"]}
 
-@app.post("/add")
-def add_numbers(data: dict):
-    return {"result": data["a"] + data["b"]}
-
-@app.post("/upscale-image")
+@app.post("/upscale-2")
 async def process_image(file: UploadFile = File(...)):
-    # 1. Simpan file upload ke folder raw/ dengan nama unik
+    return await upscale(file, 2)
+
+@app.post("/upscale-4")
+async def process_image(file: UploadFile = File(...)):
+    return await upscale(file, 4)
+
+@app.post("/upscale-6")
+async def process_image(file: UploadFile = File(...)):
+    return await upscale(file, 6)
+
+@app.post("/upscale-8")
+async def process_image(file: UploadFile = File(...)):
+    return await upscale(file, 8)
+
+async def upscale(file: UploadFile, multiplier = 2):
     image_id = uuid.uuid4()
-    input_filename = f"upscaler/raw/{image_id}.png"
+    input_filename = f"img_cache/{image_id}.png"
     with open(input_filename, "wb") as f:
         data = await file.read()
         f.write(data)
         f.flush()
         os.fsync(f.fileno())
 
-    # 2. Tentukan file output
-    output_filename = input_filename.replace(".", f"_upscaled_2x.")
-
-    # 3. Jalankan script eksternal menggunakan subprocess
+    output_filename = input_filename.replace(".", f"_upscaled_{multiplier}x.")
     try:
         subprocess.run(
             [
@@ -43,20 +54,17 @@ async def process_image(file: UploadFile = File(...)):
                 "--model", "./upscaler/model/2xLiveActionV1_SPAN.onnx",
                 "--provider", "CPUExecutionProvider",
                 "--image", input_filename,
-                "--scale", "2"
+                "--scale", str(multiplier)
             ],
             check=True
         )
     except subprocess.CalledProcessError as e:
         return {"error": f"Gagal memproses gambar: {e}"}
 
-    # 4. Baca hasil output gambar sebagai BLOB
     with open(output_filename, "rb") as f:
         blob = f.read()
 
-    # 5. Hapus file sementara (opsional)
     os.remove(input_filename)
     os.remove(output_filename)
 
-    # 6. Return gambar hasil proses sebagai response
     return Response(content=blob, media_type="image/png")
