@@ -1,13 +1,14 @@
 # 04/12/25 ✿ Asmiatun Hasanah ✿
+
 import onnxruntime as ort
 import numpy as np
 from PIL import Image
 
 # Load model
-sess = ort.InferenceSession("model/2xLiveActionV1_SPAN.onnx", providers=["CUDAExecutionProvider"])
+sess = ort.InferenceSession("model/2xLiveActionV1_SPAN.onnx", providers=["CPUExecutionProvider"]) # CUDAExecutionProvider
 
 # Load image
-img = Image.open("raw/test_1.jpeg").convert("RGB")
+img = Image.open("raw/test_2.jpg").convert("RGB")
 arr = np.array(img).astype("float32") / 255.0
 arr = arr.transpose(2, 0, 1)[None, :, :, :]  # NCHW
 
