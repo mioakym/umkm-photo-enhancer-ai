@@ -9,7 +9,7 @@
 ✿ `uvicorn`<br>
 <br>
 misalnya kalau pake nyarch linux bisa pake command:
-```
+```bash
 $ yay -S python-onnx
 $ yay -S python-onnxruntime
 $ yay -S python-opencv
@@ -20,8 +20,9 @@ $ yay -S python-fastapi
 $ yay -S uvicorn
 ```
 <br>
+
 untuk selain OS distribusi arch cukup di-install melalui pip:
-```
+```bash
 $ pip install onnx onnxruntime opencv-python pillow numpy python-multipart fastapi
 $ sudo apt install uvicorn
 ```
