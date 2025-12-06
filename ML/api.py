@@ -98,10 +98,9 @@ def get_execution_provider():
 async def process_image(file: UploadFile, command = [], result_filename = "edited"):
     image_id = uuid.uuid4()
     input_filename = f"img_cache/{image_id}.png"
-    source_image_data
+    source_image_data = file.read()
     with open(input_filename, "wb") as f:
         data = await file.read()
-        source_image_data = data
         f.write(data)
         f.flush()
         os.fsync(f.fileno())
