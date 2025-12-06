@@ -13,10 +13,6 @@ app = FastAPI()
 def home():
     return {"message": "hi kak! >-<"}
 
-# @app.get("/hello/{name}")
-# def hello(name: str):
-#     return {"message": f"Hello, {name}!"}
-
 @app.post("/upscale-2")
 async def upscale_image_2x(file: UploadFile = File(...)):
     return await upscale(file, 2)
@@ -61,6 +57,19 @@ async def remove_bg_9i(file: UploadFile = File(...)):
 async def remove_bg_10i(file: UploadFile = File(...)):
     return await remove_bg(file, 10)
 
+@app.post("/color_correction-gray")
+async def color_correction_gray_mode(file: UploadFile = File(...)):
+    return await color_correction(file, "gray")
+@app.post("/color_correction-clahe")
+async def color_correction_clahe_mode(file: UploadFile = File(...)):
+    return await color_correction(file, "clahe")
+@app.post("/color_correction-all")
+async def color_correction_all_mode(file: UploadFile = File(...)):
+    return await color_correction(file, "all")
+@app.post("/color_correction-retinex")
+async def color_correction_retinex_mode(file: UploadFile = File(...)):
+    return await color_correction(file, "retinex")
+
 def load_process_mode():
     default = "gpu"
 
@@ -89,8 +98,10 @@ def get_execution_provider():
 async def process_image(file: UploadFile, command = [], result_filename = "edited"):
     image_id = uuid.uuid4()
     input_filename = f"img_cache/{image_id}.png"
+    source_image_data
     with open(input_filename, "wb") as f:
         data = await file.read()
+        source_image_data = data
         f.write(data)
         f.flush()
         os.fsync(f.fileno())
@@ -106,7 +117,8 @@ async def process_image(file: UploadFile, command = [], result_filename = "edite
     try:
         subprocess.run(command, check=True)
     except subprocess.CalledProcessError as e:
-        return {"error": f"Gagal memproses gambar: {e}"}
+        print(f"Failed to process image: {e}")
+        return Response(content=source_image_data, media_type="image/png")
 
     with open(output_filename, "rb") as f:
         blob = f.read()
@@ -140,4 +152,16 @@ async def remove_bg(file: UploadFile, iterations = 5):
             "--iterations", str(iterations)
         ],
         f"remove_bg_{iterations}x"
+    )
+async def color_correction(file: UploadFile, mode = "gray"):
+    return await process_image(
+        file,
+        [
+            "python",
+            "./color_correction/color_correction.py",
+            "--input", "@input_filename",
+            "--output", "@output_filename",
+            "--mode", mode
+        ],
+        f"color_correction_{mode}"
     )

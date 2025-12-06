@@ -5,14 +5,6 @@ ONNX model** with configurable execution providers (CPU or CUDA).
 
 ------------------------------------------------------------------------
 
-## \## Requirements
-
-Make sure you have the following dependencies installed:
-
-    pip install onnxruntime pillow numpy
-
-------------------------------------------------------------------------
-
 ## \## Usage
 
 Run the script from terminal:
@@ -21,7 +13,7 @@ python upscale.py --image my_picture.jpg --scale 8
 ```
 
 ### Arguments:
--  `--provider` Choose execution provider: `cpu` or `cuda`
+-  `--provider` Choose execution provider: `CPUExecutionProvider` or `CUDAExecutionProvider`
 -  `--input`    Path to the input image
 -  `--scale`    Set size of the output image: `2, 4, 6, 8`
 
