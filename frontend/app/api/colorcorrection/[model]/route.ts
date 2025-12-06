@@ -1,10 +1,10 @@
-export async function POST(req: Request, context: { params: { scale: string }}) {
-    const { scale } = await context.params
+export async function POST(req: Request, context: { params: { model: string }}) {
+    const { model } = await context.params
 
-    const allowed = ["2", "4", "6", "8"]
+    const allowed = ["gray", "clahe", "all", "retinex"]
 
-    if (!allowed.includes(scale)) {
-        return new Response("Invalid upscale value", { status: 400 })
+    if (!allowed.includes(model)) {
+        return new Response("Invalid colorcorrection value", { status: 400 })
     }
 
     try {
@@ -18,7 +18,7 @@ export async function POST(req: Request, context: { params: { scale: string }}) 
         const arrayBuffer = await file.arrayBuffer()
         const buffer = Buffer.from(arrayBuffer)
 
-        const backendUrl = `${process.env.LOCAL_MODEL_BACKEND_URL}/upscale-${scale}`
+        const backendUrl = `${process.env.LOCAL_MODEL_BACKEND_URL}/color_correction-${model}`
 
         const backendForm = new FormData()
         backendForm.append(
