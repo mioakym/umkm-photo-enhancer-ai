@@ -19,7 +19,7 @@ export default function LandingPage() {
 
   const handleButton = () => {
     if (isLoggedIn) {
-      router.push('/dashboard')
+      router.push('/upscale')
     } else {
       router.push('/login')
     }
@@ -50,16 +50,12 @@ export default function LandingPage() {
           <div className="absolute -bottom-8 -right-4 h-20 w-20 bg-blue-200 rounded-full blur-xl" />
 
           <div className="bg-gray-100 rounded-2xl shadow-lg p-3 relative z-10">
-            <div className="relative w-full h-64">
+            <div className="relative w-full h-80 md:h-[450px]">
               <Image
-                src="/tes.jpg"
+                src="/landingpage.jpg"
                 alt="example product"
                 fill
                 className="rounded-xl object-cover"
-                sizes="(max-width: 768px) 100vw,
-                       (max-width: 1200px) 50vw,
-                       33vw"
-                priority={false}
               />
             </div>
           </div>

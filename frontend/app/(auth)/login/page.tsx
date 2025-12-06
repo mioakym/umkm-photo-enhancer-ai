@@ -23,7 +23,7 @@ export default function LoginPage() {
     const res = await login(form)
     if (res.success) {
       alert('Login berhasil 🎉')
-      router.push('/dashboard')
+      router.push('/upscale')
     }
   }
 
