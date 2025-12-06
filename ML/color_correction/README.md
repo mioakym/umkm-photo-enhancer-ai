@@ -26,29 +26,29 @@ A powerful algorithm for:
 Run the script from the terminal:
 
 ```bash
-python color_correct.py --input INPUT_IMAGE.jpg --output OUTPUT_IMAGE.jpg --mode MODE
+python color_correction.py --input INPUT_IMAGE.jpg --output OUTPUT_IMAGE.jpg --mode MODE
 ```
 
 ### Example Commands
 
 #### Gray World
 ```bash
-python color_correct.py --input input.jpg --output output.jpg --mode gray
+python color_correction.py --input input.jpg --output output.jpg --mode gray
 ```
 
 #### CLAHE
 ```bash
-python color_correct.py --input input.jpg --output output.jpg --mode clahe
+python color_correction.py --input input.jpg --output output.jpg --mode clahe
 ```
 
 #### Combined (Gray World + CLAHE)
 ```bash
-python color_correct.py --input input.jpg --output output.jpg --mode all
+python color_correction.py --input input.jpg --output output.jpg --mode all
 ```
 
 #### Retinex MSRCR
 ```bash
-python color_correct.py --input input.jpg --output output.jpg --mode retinex
+python color_correction.py --input input.jpg --output output.jpg --mode retinex
 ```
 
 ---
