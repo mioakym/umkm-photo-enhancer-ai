@@ -10,7 +10,7 @@
 Run the script from the terminal:
 
 ```bash
-python remove_bg.py --input input.jpg --output output.png --iterations 5
+python bg_remover.py --input input.jpg --output output.png --iterations 5
 ```
 ---
 
