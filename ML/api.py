@@ -16,26 +16,50 @@ def home():
 # @app.get("/hello/{name}")
 # def hello(name: str):
 #     return {"message": f"Hello, {name}!"}
-#
-# @app.post("/add")
-# def add_numbers(data: dict):
-#     return {"result": data["a"] + data["b"]}
 
 @app.post("/upscale-2")
-async def process_image(file: UploadFile = File(...)):
+async def upscale_image_2x(file: UploadFile = File(...)):
     return await upscale(file, 2)
-
 @app.post("/upscale-4")
-async def process_image(file: UploadFile = File(...)):
+async def upscale_image_4x(file: UploadFile = File(...)):
     return await upscale(file, 4)
-
 @app.post("/upscale-6")
-async def process_image(file: UploadFile = File(...)):
+async def upscale_image_6x(file: UploadFile = File(...)):
     return await upscale(file, 6)
-
 @app.post("/upscale-8")
-async def process_image(file: UploadFile = File(...)):
+async def upscale_image_8x(file: UploadFile = File(...)):
     return await upscale(file, 8)
+
+@app.post("/remove_bg-1")
+async def remove_bg_1i(file: UploadFile = File(...)):
+    return await remove_bg(file, 1)
+@app.post("/remove_bg-2")
+async def remove_bg_2i(file: UploadFile = File(...)):
+    return await remove_bg(file, 2)
+@app.post("/remove_bg-3")
+async def remove_bg_3i(file: UploadFile = File(...)):
+    return await remove_bg(file, 3)
+@app.post("/remove_bg-4")
+async def remove_bg_4i(file: UploadFile = File(...)):
+    return await remove_bg(file, 4)
+@app.post("/remove_bg-5")
+async def remove_bg_5i(file: UploadFile = File(...)):
+    return await remove_bg(file, 5)
+@app.post("/remove_bg-6")
+async def remove_bg_6i(file: UploadFile = File(...)):
+    return await remove_bg(file, 6)
+@app.post("/remove_bg-7")
+async def remove_bg_7i(file: UploadFile = File(...)):
+    return await remove_bg(file, 7)
+@app.post("/remove_bg-8")
+async def remove_bg_8i(file: UploadFile = File(...)):
+    return await remove_bg(file, 8)
+@app.post("/remove_bg-9")
+async def remove_bg_9i(file: UploadFile = File(...)):
+    return await remove_bg(file, 9)
+@app.post("/remove_bg-10")
+async def remove_bg_10i(file: UploadFile = File(...)):
+    return await remove_bg(file, 10)
 
 def load_process_mode():
     default = "gpu"
@@ -62,7 +86,7 @@ def get_execution_provider():
     else:
         return "CPUExecutionProvider"
 
-async def upscale(file: UploadFile, multiplier = 2):
+async def process_image(file: UploadFile, command = [], result_filename = "edited"):
     image_id = uuid.uuid4()
     input_filename = f"img_cache/{image_id}.png"
     with open(input_filename, "wb") as f:
@@ -71,19 +95,16 @@ async def upscale(file: UploadFile, multiplier = 2):
         f.flush()
         os.fsync(f.fileno())
 
-    output_filename = input_filename.replace(".", f"_upscaled_{multiplier}x.")
+    output_filename = input_filename.replace(".", f"_{result_filename}.")
+
+    for i, arg in enumerate(command):
+        if arg == "@input_filename":
+            command[i] = input_filename
+        elif arg == "@output_filename":
+            command[i] = output_filename
+
     try:
-        subprocess.run(
-            [
-                "python",
-                "./upscaler/upscale.py",
-                "--model", "./upscaler/model/2xLiveActionV1_SPAN.onnx",
-                "--provider", get_execution_provider(),
-                "--image", input_filename,
-                "--scale", str(multiplier)
-            ],
-            check=True
-        )
+        subprocess.run(command, check=True)
     except subprocess.CalledProcessError as e:
         return {"error": f"Gagal memproses gambar: {e}"}
 
@@ -94,3 +115,29 @@ async def upscale(file: UploadFile, multiplier = 2):
     os.remove(output_filename)
 
     return Response(content=blob, media_type="image/png")
+
+async def upscale(file: UploadFile, multiplier = 2):
+    return await process_image(
+        file,
+        [
+            "python",
+            "./upscaler/upscale.py",
+            "--model", "./upscaler/model/2xLiveActionV1_SPAN.onnx",
+            "--provider", get_execution_provider(),
+            "--image", "@input_filename",
+            "--scale", str(multiplier)
+        ],
+        f"upscaled_{multiplier}x"
+    )
+async def remove_bg(file: UploadFile, iterations = 5):
+    return await process_image(
+        file,
+        [
+            "python",
+            "./bg_remover/bg_remover.py",
+            "--input", "@input_filename",
+            "--output", "@output_filename",
+            "--iterations", str(iterations)
+        ],
+        f"remove_bg_{iterations}x"
+    )
