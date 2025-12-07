@@ -1,11 +1,11 @@
-# Image Upscaling Script (2xLiveActionV1_SPAN)
+# Image Upscaling
 
 This script allows you to upscale images using the **2xLiveActionV1_SPAN
-ONNX model** with configurable execution providers (CPU or CUDA).
+ONNX** model.
 
 ------------------------------------------------------------------------
 
-## \## Usage
+## Usage
 
 Run the script from terminal:
 ```
@@ -19,13 +19,13 @@ python upscale.py --image my_picture.jpg --scale 8
 
 ------------------------------------------------------------------------
 
-## \## Example (CPU)
+## Example (CPU)
 ```
 python upscale.py --provider CPUExecutionProvider --image my_picture.jpg --scale 4
 ```
 ------------------------------------------------------------------------
 
-## \## Notes
+## Notes
 
 -   CUDA provider requires a compatible NVIDIA GPU and CUDA runtime
     installed.
@@ -34,7 +34,7 @@ python upscale.py --provider CPUExecutionProvider --image my_picture.jpg --scale
 
 ------------------------------------------------------------------------
 
-## \## Troubleshooting
+## Troubleshooting
 
 ### 📌 ONNXRuntime CUDA Error
 
